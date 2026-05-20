@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CafeSec Lab</title>
+    <meta
+      name="description"
+      content="Defensive security research for internet cafes, gaming venues, esports hotels, and managed shared-PC environments."
+    >
+    <link rel="canonical" href="https://cafeseclab.com/">
+    <meta property="og:title" content="CafeSec Lab">
+    <meta
+      property="og:description"
+      content="Defensive security research, hardening guidance, detection rules, and integrity monitoring for shared-PC venues."
+    >
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://cafeseclab.com/">
+    <meta name="theme-color" content="#111827">
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #111827;
+        --muted: #4b5563;
+        --line: #d1d5db;
+        --soft: #f3f4f6;
+        --panel: #ffffff;
+        --accent: #0f766e;
+        --accent-strong: #115e59;
+        --warn: #92400e;
+        --link: #1d4ed8;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: #f8fafc;
+        color: var(--ink);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        line-height: 1.55;
+      }
+
+      a {
+        color: var(--link);
+        text-decoration-thickness: 0.08em;
+        text-underline-offset: 0.18em;
+      }
+
+      .shell {
+        min-height: 100vh;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+      }
+
+      header,
+      main,
+      footer {
+        width: min(1120px, calc(100% - 40px));
+        margin: 0 auto;
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 28px 0 18px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--ink);
+        text-decoration: none;
+      }
+
+      .mark {
+        width: 36px;
+        height: 36px;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--line);
+        background: var(--panel);
+        border-radius: 8px;
+        font-weight: 800;
+        color: var(--accent-strong);
+      }
+
+      .brand strong {
+        display: block;
+        font-size: 17px;
+        letter-spacing: 0;
+      }
+
+      .brand span {
+        display: block;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        font-size: 14px;
+      }
+
+      nav a {
+        color: var(--muted);
+        text-decoration: none;
+      }
+
+      nav a:hover {
+        color: var(--ink);
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+        gap: 40px;
+        align-items: center;
+        padding: 58px 0 48px;
+      }
+
+      .eyebrow {
+        margin: 0 0 14px;
+        color: var(--accent-strong);
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0;
+      }
+
+      h1 {
+        margin: 0;
+        max-width: 760px;
+        font-size: clamp(42px, 7vw, 76px);
+        line-height: 0.97;
+        letter-spacing: 0;
+      }
+
+      .summary {
+        max-width: 710px;
+        margin: 22px 0 0;
+        color: var(--muted);
+        font-size: 19px;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 30px;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        padding: 0 18px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: var(--panel);
+        color: var(--ink);
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .button.primary {
+        border-color: var(--accent);
+        background: var(--accent);
+        color: #ffffff;
+      }
+
+      .button:hover {
+        border-color: var(--ink);
+      }
+
+      .signal {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        overflow: hidden;
+      }
+
+      .signal img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-bottom: 1px solid var(--line);
+        background: var(--soft);
+      }
+
+      .signal-body {
+        padding: 18px;
+      }
+
+      .signal-body h2 {
+        margin: 0 0 8px;
+        font-size: 18px;
+      }
+
+      .signal-body p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .sections {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+        padding: 14px 0 54px;
+      }
+
+      .section {
+        border-top: 3px solid var(--accent);
+        background: var(--panel);
+        padding: 20px;
+        min-height: 210px;
+      }
+
+      .section:nth-child(2) {
+        border-top-color: #2563eb;
+      }
+
+      .section:nth-child(3) {
+        border-top-color: #b45309;
+      }
+
+      .section h2 {
+        margin: 0 0 10px;
+        font-size: 19px;
+      }
+
+      .section p {
+        margin: 0 0 16px;
+        color: var(--muted);
+      }
+
+      .section ul {
+        margin: 0;
+        padding-left: 18px;
+        color: var(--muted);
+      }
+
+      .notice {
+        border-left: 4px solid var(--warn);
+        background: #fffbeb;
+        padding: 16px 18px;
+        margin: 0 0 52px;
+        color: #3f2f14;
+      }
+
+      .notice strong {
+        color: #1f2937;
+      }
+
+      footer {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 24px 0 34px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      footer p {
+        margin: 0;
+      }
+
+      @media (max-width: 860px) {
+        header {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .hero {
+          grid-template-columns: 1fr;
+          padding-top: 36px;
+        }
+
+        .sections {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 520px) {
+        header,
+        main,
+        footer {
+          width: min(100% - 28px, 1120px);
+        }
+
+        h1 {
+          font-size: 42px;
+        }
+
+        .summary {
+          font-size: 17px;
+        }
+
+        .actions {
+          display: grid;
+        }
+
+        .button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <header>
+        <a class="brand" href="https://cafeseclab.com/" aria-label="CafeSec Lab home">
+          <span class="mark" aria-hidden="true">CS</span>
+          <span>
+            <strong>CafeSec Lab</strong>
+            <span>Defensive shared-PC venue security</span>
+          </span>
+        </a>
+        <nav aria-label="Primary navigation">
+          <a href="https://research.cafeseclab.com/">Research</a>
+          <a href="https://github.com/magnoormeno-dot/netcafe-security-lab">Repository</a>
+          <a href="https://github.com/magnoormeno-dot/netcafe-security-lab/releases">Releases</a>
+          <a href="mailto:contact@cafeseclab.com">Contact</a>
+        </nav>
+      </header>
+
+      <main>
+        <section class="hero" aria-labelledby="page-title">
+          <div>
+            <p class="eyebrow">Independent defensive security research</p>
+            <h1 id="page-title">Security guidance for shared-PC venues.</h1>
+            <p class="summary">
+              CafeSec Lab publishes vendor-neutral hardening guidance, detection
+              rules, integrity monitoring tooling, and research notes for internet
+              cafes, gaming venues, esports hotels, and managed shared-PC fleets.
+            </p>
+            <div class="actions" aria-label="Primary links">
+              <a class="button primary" href="https://research.cafeseclab.com/">Read research notes</a>
+              <a class="button" href="https://github.com/magnoormeno-dot/netcafe-security-lab">View repository</a>
+              <a class="button" href="https://github.com/magnoormeno-dot/netcafe-security-lab/releases/tag/v0.1.1">Latest release</a>
+            </div>
+          </div>
+
+          <aside class="signal" aria-label="Project signal summary">
+            <img
+              alt="CafeSec Lab repository preview"
+              src="https://opengraph.githubassets.com/cafeseclab-root/magnoormeno-dot/netcafe-security-lab"
+            >
+            <div class="signal-body">
+              <h2>Current public release: v0.1.1</h2>
+              <p>
+                Includes hardening checklists, YARA and Sigma detection content,
+                a Python integrity monitor, deployment guidance, and a research
+                blog at research.cafeseclab.com.
+              </p>
+            </div>
+          </aside>
+        </section>
+
+        <section class="sections" aria-label="Project areas">
+          <article class="section">
+            <h2>Operator Guidance</h2>
+            <p>
+              Practical controls for venues with limited security budget and
+              public or semi-public Windows hosts.
+            </p>
+            <ul>
+              <li>Windows host hardening</li>
+              <li>Billing-software threat modeling</li>
+              <li>Network and physical controls</li>
+            </ul>
+          </article>
+
+          <article class="section">
+            <h2>Detection Content</h2>
+            <p>
+              Vendor-neutral rules that prioritize defensive intent, false-positive
+              handling, and safe tuning.
+            </p>
+            <ul>
+              <li>YARA rule families</li>
+              <li>Sigma rules</li>
+              <li>ATT&CK mapping and tuning notes</li>
+            </ul>
+          </article>
+
+          <article class="section">
+            <h2>Integrity Monitoring</h2>
+            <p>
+              A Python tool for baseline management, file integrity checks,
+              process monitoring, event review, and alerting.
+            </p>
+            <ul>
+              <li>Signed baselines</li>
+              <li>File and process checks</li>
+              <li>Console, file, and webhook alerts</li>
+            </ul>
+          </article>
+        </section>
+
+        <section class="notice" aria-label="Responsible research boundaries">
+          <strong>Defensive-only boundary:</strong>
+          CafeSec Lab does not publish billing bypass tools, exploit chains,
+          credentials, weaponized proof-of-concept code, or vendor-specific
+          claims outside coordinated disclosure. Sensitive reports should be sent
+          to <a href="mailto:security@cafeseclab.com">security@cafeseclab.com</a>.
+        </section>
+      </main>
+
+      <footer>
+        <p>Research contact: <a href="mailto:research@cafeseclab.com">research@cafeseclab.com</a></p>
+        <p>Security contact: <a href="mailto:security@cafeseclab.com">security@cafeseclab.com</a></p>
+      </footer>
+    </div>
+  </body>
+</html>
