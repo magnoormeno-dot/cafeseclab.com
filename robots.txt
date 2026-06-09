@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
 
+Sitemap: https://cafeseclab.com/sitemap.xml
 Sitemap: https://research.cafeseclab.com/sitemap.xml

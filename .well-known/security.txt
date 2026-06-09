@@ -8,6 +8,10 @@ Contact: mailto:mandyminss@protonmail.com
 Expires: 2027-06-06T23:59:59.000Z
 Preferred-Languages: en, zh
 Canonical: https://cafeseclab.com/.well-known/security.txt
+# Encryption: add after publishing your PGP public key (private key stays on your machine).
+#   1. gpg --armor --export <key-id> > .well-known/openpgp-key.txt
+#   2. uncomment the line below
+# Encryption: https://cafeseclab.com/.well-known/openpgp-key.txt
 Policy: https://github.com/magnoormeno-dot/netcafe-security-lab/blob/main/.github/SECURITY.md
 Acknowledgments: https://github.com/magnoormeno-dot/netcafe-security-lab
 
